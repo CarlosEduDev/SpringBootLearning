@@ -1,14 +1,15 @@
 package br.com.erudio.data.vo.v1;
 
-import java.io.Serial;
+import org.springframework.hateoas.RepresentationModel;
+
 import java.io.Serializable;
 import java.util.Objects;
 
 /* manipular ordem da serializacao
 @JsonPropertyOrder({"id", "address", "first_name", "last_name", "gender"})*/
-public class PersonVO implements Serializable {
+public class PersonVO extends RepresentationModel<PersonVO> implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     private Long id;
     private String firstName;

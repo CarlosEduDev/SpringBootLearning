@@ -3,6 +3,7 @@ package br.com.erudio.controller;
 import br.com.erudio.data.vo.v1.PersonVO;
 import br.com.erudio.services.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,12 +19,24 @@ public class PersonController {
 
     @GetMapping(produces = {"application/json", "application/xml","application/x-yaml"})
     public List<PersonVO> findAll() {
-        return services.findAll();
+
+        List<PersonVO> list = services.findAll();
+        for (PersonVO personVO: list) {
+            Long id = personVO.getId();
+            personVO.add(WebMvcLinkBuilder.linkTo(
+                    WebMvcLinkBuilder.methodOn(PersonController.class).findById(id)
+            ).withSelfRel());
+        }
+        return list;
     }
 
     @GetMapping(value = "/{id}", produces = {"application/json", "application/xml","application/x-yaml"})
     public PersonVO findById(@PathVariable("id") Long id) {
-        return services.findById(id);
+        PersonVO person = services.findById(id);
+        person.add(WebMvcLinkBuilder.linkTo(
+                WebMvcLinkBuilder.methodOn(PersonController.class).findAll()
+        ).withRel("List person"));
+        return person;
     }
 
 
@@ -31,7 +44,11 @@ public class PersonController {
             consumes = {"application/json", "application/xml","application/x-yaml"}
     )
     public PersonVO create(@RequestBody PersonVO person) {
-        return services.create(person);
+        PersonVO personVO = services.create(person);
+        personVO.add(WebMvcLinkBuilder.linkTo(
+                WebMvcLinkBuilder.methodOn(PersonController.class).findAll()
+        ).withRel("List person"));
+        return personVO;
     }
 
 
@@ -39,7 +56,11 @@ public class PersonController {
             consumes = {"application/json", "application/xml","application/x-yaml"}
     )
     public PersonVO update(@RequestBody PersonVO person) {
-        return services.update(person);
+        PersonVO personVO = services.update(person);
+        personVO.add(WebMvcLinkBuilder.linkTo(
+                WebMvcLinkBuilder.methodOn(PersonController.class).findAll()
+        ).withRel("List person"));
+        return personVO;
     }
 
     @DeleteMapping("/{id}")
