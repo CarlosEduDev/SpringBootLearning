@@ -3,14 +3,19 @@ package br.com.erudio.controller;
 import br.com.erudio.data.vo.v1.PersonVO;
 import br.com.erudio.services.PersonService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-@Api(value = "Person", tags = "Person")
+
+/**
+ * Cors a nivel global de controler,
+ * tambem e possivel usa-lo a nivel de end point
+ * @CrossOrigin(value = "http://localhost:8080")
+ **/
+@Api(tags = "Person")
 @RestController
 @RequestMapping("api/person/v1")
 public class PersonController {
@@ -19,10 +24,10 @@ public class PersonController {
     private PersonService services;
 
 
-    @GetMapping(produces = {"application/json", "application/xml","application/x-yaml"})
+    @GetMapping(produces = {"application/json", "application/xml", "application/x-yaml"})
     public List<PersonVO> findAll() {
         List<PersonVO> list = services.findAll();
-        for (PersonVO personVO: list) {
+        for (PersonVO personVO : list) {
             Long id = personVO.getId();
             personVO.add(WebMvcLinkBuilder.linkTo(
                     WebMvcLinkBuilder.methodOn(PersonController.class).findById(id)
@@ -31,7 +36,7 @@ public class PersonController {
         return list;
     }
 
-    @GetMapping(value = "/{id}", produces = {"application/json", "application/xml","application/x-yaml"})
+    @GetMapping(value = "/{id}", produces = {"application/json", "application/xml", "application/x-yaml"})
     public PersonVO findById(@PathVariable("id") Long id) {
         PersonVO person = services.findById(id);
         person.add(WebMvcLinkBuilder.linkTo(
@@ -41,8 +46,8 @@ public class PersonController {
     }
 
 
-    @PostMapping(produces = {"application/json", "application/xml","application/x-yaml"},
-            consumes = {"application/json", "application/xml","application/x-yaml"}
+    @PostMapping(produces = {"application/json", "application/xml", "application/x-yaml"},
+            consumes = {"application/json", "application/xml", "application/x-yaml"}
     )
     public PersonVO create(@RequestBody PersonVO person) {
         PersonVO personVO = services.create(person);
@@ -53,8 +58,8 @@ public class PersonController {
     }
 
 
-    @PutMapping(produces = {"application/json", "application/xml","application/x-yaml"},
-            consumes = {"application/json", "application/xml","application/x-yaml"}
+    @PutMapping(produces = {"application/json", "application/xml", "application/x-yaml"},
+            consumes = {"application/json", "application/xml", "application/x-yaml"}
     )
     public PersonVO update(@RequestBody PersonVO person) {
         PersonVO personVO = services.update(person);
