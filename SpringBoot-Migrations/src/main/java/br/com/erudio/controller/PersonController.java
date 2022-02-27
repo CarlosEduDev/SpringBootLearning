@@ -2,13 +2,15 @@ package br.com.erudio.controller;
 
 import br.com.erudio.data.vo.v1.PersonVO;
 import br.com.erudio.services.PersonService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@Api(value = "Person", tags = "Person")
 @RestController
 @RequestMapping("api/person/v1")
 public class PersonController {
@@ -19,7 +21,6 @@ public class PersonController {
 
     @GetMapping(produces = {"application/json", "application/xml","application/x-yaml"})
     public List<PersonVO> findAll() {
-
         List<PersonVO> list = services.findAll();
         for (PersonVO personVO: list) {
             Long id = personVO.getId();
